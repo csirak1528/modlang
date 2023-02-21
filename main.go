@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/csirak1528/modlang/src/token"
+	"github.com/csirak1528/modlang/token"
 
-	lex "github.com/csirak1528/modlang/src/lexer"
+	lex "github.com/csirak1528/modlang/lexer"
 )
 
 func main() {
