@@ -42,9 +42,10 @@ const (
 	TYPE       // variable type
 	KEYWORD    // keywords like var, module, if
 	NUMBER     // number
-	IDENTIFIER // string, number etc
+	IDENTIFIER // identifier
 	NULL       // null
 	ERROR      // error
+	STRING     // string
 )
 
 type Token struct {
@@ -57,4 +58,4 @@ func CreateAndGetPointer(Type TokenType, Data string) *Token {
 	return &t
 }
 
-var TOKENS = []string{"DOT", "COMMA", "ASSIGN", "SEMICOLON", "COLON", "LEFT_CURLY", "RIGHT_CURLY", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "FORWARD_SLASH", "BACKWARD_SLASH", "DOUBLE_QUOTE", "SINGLE_QUOTE", "TICK", "GREATER", "LESS", "NOT", "ADD", "SUB", "STAR", "DOLLAR", "QUESTION", "UNDER_SCORE", "NOT_EQUALS", "EQUALS", "LESS_OR_EQ", "GREATER_OR_EQ", "AND", "OR", "EXPONENT", "EOF", "TYPE", "KEYWORD", "NUMBER", "IDENTIFIER", "NULL", "ERROR"}
+var TOKENS = []string{"DOT", "COMMA", "ASSIGN", "SEMICOLON", "COLON", "LEFT_CURLY", "RIGHT_CURLY", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "FORWARD_SLASH", "BACKWARD_SLASH", "DOUBLE_QUOTE", "SINGLE_QUOTE", "TICK", "GREATER", "LESS", "NOT", "ADD", "SUB", "STAR", "DOLLAR", "QUESTION", "UNDER_SCORE", "NOT_EQUALS", "EQUALS", "LESS_OR_EQ", "GREATER_OR_EQ", "AND", "OR", "EXPONENT", "EOF", "TYPE", "KEYWORD", "NUMBER", "IDENTIFIER", "NULL", "ERROR","STRING"}

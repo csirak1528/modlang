@@ -22,6 +22,9 @@ const SYMBOLS = ".,=;:{})([]/\\\"'`!===<><=>=&&!||+-***?$_"
 const WHITESPACE = " \n\t"
 const ALPHANUMERIC = "1234567890abcdefghjiklmnopqrstuvwxyzABCDEFGHJIKLMNOPQRSTUVWXYZ"
 
+const STRINGCONTENTS = "1234567890abcdefghjiklmnopqrstuvwxyzABCDEFGHJIKLMNOPQRSTUVWXYZ.,=;:{})([]/'`!===<><=>=&&!||+-***?$_\a\b\f\n\r\t\v'\\ "
+const escapeChars = "abfnrtv'\"\\"
+
 var KEYWORDS = []string{"module", "if", "else", "for", "while", "break", "wallet", "this", "const", "import", "return", "struct", "null", "new", "from", "require"}
 var TYPES = []string{"uint", "address", "bool", "string", "bytes"}
 var DOUBLESYMBOLS = []string{"!", "=", "<", ">", "&", "|", "*"}
@@ -166,7 +169,12 @@ func (l *Lexer) lexSymbol() *token.Token {
 	var symbolType token.TokenType
 
 	symbol := string(l.next())
-
+	if symbol == "\""  {
+		return l.lexString()
+	}
+	if symbol == "-" && unicode.IsDigit(l.peek()) {
+		return l.lexNumber()
+	}
 	if existsIn(DOUBLESYMBOLS, symbol) && existsInRune(SYMBOLS, l.peek()) {
 		l.next()
 	}
@@ -256,4 +264,14 @@ func (l *Lexer) lexNumber() *token.Token {
 		l.acceptRun(digits)
 	}
 	return token.CreateAndGetPointer(token.NUMBER, l.getCurrent())
+}
+
+func (l *Lexer) lexString() *token.Token {
+	l.accept("\"")
+	l.acceptRun(STRINGCONTENTS)
+	if !l.accept("\"") {
+		panic(errors.StringSyntaxError + l.getCurrent() + string(l.peek()))
+	}
+	return token.CreateAndGetPointer(token.STRING, l.getCurrent())
+
 }
