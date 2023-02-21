@@ -1,12 +1,12 @@
 import LendingPool, AToken from "aave/v2"
 
-class AaveWithdrawal extends Module {
+module AaveWithdrawal {
     
-    this.preTransactions = ordered([
+    this.preTxs = ordered([
         AToken.approve(wallet, amount)
     ])
 
-    createWithdraw(AToken token, address user, uint amount) {
+    createWithdraw(AToken token, address user, uint amount){
         LendingPool pool = token.POOL();
         address underlyingAssetAddress = token.UNDERLYING_ASSET_ADDRESS();
 
