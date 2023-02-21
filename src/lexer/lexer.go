@@ -18,6 +18,10 @@ type Lexer struct {
 	width int
 }
 
+// TODO
+// - Add support for addresses
+// - Add support for bytes
+
 const SYMBOLS = ".,=;:{})([]/\\\"'`!===<><=>=&&!||+-***?$_"
 const WHITESPACE = " \n\t"
 const ALPHANUMERIC = "1234567890abcdefghjiklmnopqrstuvwxyzABCDEFGHJIKLMNOPQRSTUVWXYZ"
