@@ -17,7 +17,7 @@ type Stack struct {
 	Size int
 }
 
-func (tsn *TokenStackNode) Push(t *token.Token) {
+func (tsn *Stack) Push(t *token.Token) {
 	cur := TokenStackNode{val: t, next: tsn, len: tsn.len + 1}
 	tsn = &cur
 }
