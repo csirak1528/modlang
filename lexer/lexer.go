@@ -7,8 +7,8 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/csirak1528/modlang/src/errors"
-	"github.com/csirak1528/modlang/src/token"
+	"github.com/csirak1528/modlang/errors"
+	"github.com/csirak1528/modlang/token"
 )
 
 type Lexer struct {

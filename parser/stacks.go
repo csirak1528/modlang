@@ -1,40 +1,42 @@
 package parser
 
-import "github.com/csirak1528/modlang/src/token"
+import (
+	"fmt"
 
-type Stack interface {
-	push()
-	pop() *any
-}
+	"github.com/csirak1528/modlang/token"
+)
+
 
 type TokenStackNode struct {
-	cur  *token.Token
-	next *token.Token
+	val  *token.Token
+	next *TokenStackNode
+	len  int
+}
+type Stack struct {
+	head any
+	Size int
 }
 
-func (tsn *TokenStackNode) push(t *token.Token) {
-	tsn.next = tsn.cur
-	tsn.cur = t
+func (tsn *TokenStackNode) Push(t *token.Token) {
+	cur := TokenStackNode{val: t, next: tsn, len: tsn.len + 1}
+	tsn = &cur
 }
 
-func (tsn *TokenStackNode) pop(t *token.Token) *token.Token {
-	out := tsn.cur
-	tsn.cur = tsn.next
+func (tsn *TokenStackNode) Pop() *token.Token {
+	out := tsn.val
+	tsn = tsn.next
 	return out
 }
 
-type OperationStackNode struct {
-	cur  *Operation
-	next *Operation
+func (tsn *TokenStackNode) Peek() *token.Token {
+	return tsn.next.val
 }
 
-func (tsn *OperationStackNode) push(t *Operation) {
-	tsn.next = tsn.cur
-	tsn.cur = t
-}
-
-func (tsn *OperationStackNode) pop(t *Operation) *Operation {
-	out := tsn.cur
-	tsn.cur = tsn.next
-	return out
+func (tsn *TokenStackNode) ToArray() []*token.Token {
+	fmt.Print(tsn)
+	arr := make([]*token.Token, tsn.len)
+	for tsn.len >= 0 {
+		arr[tsn.len] = tsn.Pop()
+	}
+	return arr
 }

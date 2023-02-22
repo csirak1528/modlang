@@ -1,19 +1,11 @@
 package parser
 
-import "github.com/csirak1528/modlang/src/token"
-
-type OperationType int
-
-const (
-	ASSIGN OperationType = iota // TYPE IDENTIFIER ASSIGN || IDENTIFIER ASSIGN
-	MATH
-)
+import "github.com/csirak1528/modlang/token"
 
 type Operation struct {
-	Type     int
+	Type     token.TokenType
 	Parent   *Operation
-	Children []*Operation
-	Data     []*token.Token
+	Children []any
 }
 
 type MathOperation struct {
@@ -25,14 +17,21 @@ type MathOperation struct {
 	IsOperation bool
 }
 
+func CreateMathOperation(opType token.TokenType, left any, right any) *Operation {
+	child := []any{left, right}
+	o := Operation{Type: opType, Children: child}
+	return &o
+}
+
+func (o *Operation) setParent(p *Operation) {
+	o.Parent = p
+}
+
+// (NUMBER || MATH) (ADD || SUB || MUL || EXP || FORWARD_SLASH) (NUMBER || MATH)
+
 type AssignOperation struct {
 	Left  []*token.Token
 	Right []*token.Token
 }
 
-
-// NUMBER ADD NUMBER || NUMBER ADD MATH || MATH ADD MATH
-// NUMBER SUB NUMBER || NUMBER SUB MATH || MATH SUB MATH
-// NUMBER MUL NUMBER || NUMBER MUL MATH || MATH MUL MATH
-// NUMBER EXP NUMBER || NUMBER EXP MATH || MATH EXP MATH
-// NUMBER FORWARD_SLASH NUMBER || NUMBER FORWARD_SLASH MATH || MATH FORWARD_SLASH MATH
+// TYPE IDENTIFIER ASSIGN OPERATION || IDENTIFIER ASSIGN OPERATION
