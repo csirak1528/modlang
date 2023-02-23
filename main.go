@@ -12,14 +12,16 @@ func main() {
 
 	lexer := loadFile()
 	tokens := lexer.Exec()
-	for _, t := range tokens {
-		t.Log()
-	}
 
 	fmt.Println("\nLexing is complete\n")
 
-	parser := parser.Parser{Tokens: tokens}
-	parser.Parse()
+	mainParser := parser.Parser{Tokens: tokens, ItemStack: &parser.Stack{}}
+	stack := mainParser.ParseAll().ToArray().([]any)
+	for lineNumber, out := range stack {
+		fmt.Print(lineNumber+1,": ")
+		fmt.Println("Result: ", out.(*parser.Operation).Eval())
+	}
+
 }
 
 func loadFile() *lex.Lexer {

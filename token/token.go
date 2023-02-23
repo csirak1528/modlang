@@ -71,15 +71,68 @@ func CreateAndGetPointer(Type TokenType, Data string) *Token {
 }
 
 func (t *Token) Log() {
-	fmt.Println(TOKENS[t.Type], t.Data)
+	fmt.Println(TOKENS[t.Type] + ":" + t.Data)
+}
+
+func (t *Token) GetLog() string {
+	return TOKENS[t.Type] + ":" + t.Data
 }
 
 func (t TokenType) Log() {
 	fmt.Println(TOKENS[t])
-
+}
+func (t TokenType) GetLog() string {
+	return TOKENS[t]
 }
 
-var TOKENS = []string{"DOT", "COMMA", "ASSIGN", "SEMICOLON", "COLON", "LEFT_CURLY", "RIGHT_CURLY", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "FORWARD_SLASH", "BACKWARD_SLASH", "DOUBLE_QUOTE", "SINGLE_QUOTE", "TICK", "GREATER", "LESS", "NOT", "ADD", "SUB", "STAR", "DOLLAR", "QUESTION", "UNDER_SCORE", "NOT_EQUALS", "EQUALS", "LESS_OR_EQ", "GREATER_OR_EQ", "AND", "OR", "EXPONENT", "INC", "DEC", "ADD_ASSIGN", "SUB_ASSIGN", "MUL_ASSIGN", "DIV_ASSIGN", "EOF", "TYPE", "KEYWORD", "NUMBER", "IDENTIFIER", "NULL", "ERROR", "STRING", "START"}
+var TOKENS = []string{
+	"DOT",
+	"COMMA",
+	"ASSIGN",
+	"SEMICOLON",
+	"COLON",
+	"LEFT_CURLY",
+	"RIGHT_CURLY",
+	"LEFT_PAREN",
+	"RIGHT_PAREN",
+	"LEFT_BRACKET",
+	"RIGHT_BRACKET",
+	"BACKWARD_SLASH",
+	"DOUBLE_QUOTE",
+	"SINGLE_QUOTE",
+	"TICK",
+	"GREATER",
+	"LESS",
+	"NOT",
+	"ADD",
+	"SUB",
+	"STAR",
+	"FORWARD_SLASH",
+	"DOLLAR",
+	"QUESTION",
+	"UNDER_SCORE",
+	"NOT_EQUALS",
+	"EQUALS",
+	"LESS_OR_EQ",
+	"GREATER_OR_EQ",
+	"AND",
+	"OR",
+	"EXPONENT",
+	"INC",
+	"DEC",
+	"ADD_ASSIGN",
+	"SUB_ASSIGN",
+	"MUL_ASSIGN",
+	"DIV_ASSIGN",
+	"EOF",
+	"TYPE",
+	"KEYWORD",
+	"NUMBER",
+	"IDENTIFIER",
+	"NULL",
+	"ERROR",
+	"STRING",
+	"START"}
 
 var MATH = []TokenType{ADD, SUB, STAR, FORWARD_SLASH, EXPONENT}
 
@@ -91,3 +144,13 @@ func (t TokenType) ExistsIn(list []TokenType) bool {
 	}
 	return false
 }
+
+func LogTokens(tkns []*Token) string {
+	out := tkns[0].GetLog()
+	for _, t := range tkns[1:] {
+		out += ", " + t.GetLog()
+	}
+	return out
+}
+
+var EOFTOKEN = &Token{Type: EOF}

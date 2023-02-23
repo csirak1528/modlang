@@ -32,6 +32,7 @@ const escapeChars = "abfnrtv'\"\\"
 var KEYWORDS = []string{"module", "if", "else", "for", "while", "break", "wallet", "this", "const", "import", "return", "struct", "null", "new", "from", "require"}
 var TYPES = []string{"uint", "address", "bool", "string", "bytes"}
 var DOUBLESYMBOLS = []string{"!", "=", "<", ">", "&", "|", "*"}
+var DOUBLESYMBOLSEND = []string{"&", "|", "*", "+", "-", "="}
 
 type StringArr []string
 
@@ -180,8 +181,8 @@ func (l *Lexer) lexSymbol() *token.Token {
 	if symbol == "-" && unicode.IsDigit(l.peek()) {
 		return l.lexNumber()
 	}
-	if existsIn(DOUBLESYMBOLS, symbol) && existsInRune(SYMBOLS, l.peek()) {
-		l.next()
+	if existsIn(DOUBLESYMBOLS, symbol) && existsIn(DOUBLESYMBOLSEND, string(l.peek())) {
+		symbol += string(l.next())
 	}
 
 	switch string(symbol) {
