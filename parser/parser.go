@@ -7,7 +7,7 @@ import (
 type Parser struct {
 	Tokens     []*token.Token
 	curToken   int
-	TokenStack *TokenStackNode
+	TokenStack *Stack
 }
 
 func (p *Parser) next() *token.Token {
@@ -37,18 +37,18 @@ func (p *Parser) waitFor(t []token.TokenType) {
 
 func (p *Parser) Parse() {
 	curOperation := &Operation{}
+	p.TokenStack = &Stack{}
 	for {
 		curToken := p.getCurToken()
 		if curToken.Type == token.EOF {
 			break
-		}
-		if curToken.Type.ExistsIn(token.MATH) {
+		} else if curToken.Type.ExistsIn(token.MATH) {
 			mathOp := p.parseMath()
 			mathOp.setParent(curOperation)
+			mathOp.LogMath()
+		} else {
+			p.TokenStack.Push(curToken)
 		}
-
-		p.TokenStack.Push(curToken)
-
 		p.next()
 	}
 }

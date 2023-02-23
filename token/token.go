@@ -1,5 +1,7 @@
 package token
 
+import "fmt"
+
 type TokenType int
 
 const (
@@ -66,6 +68,15 @@ type Token struct {
 func CreateAndGetPointer(Type TokenType, Data string) *Token {
 	t := Token{Type, Data}
 	return &t
+}
+
+func (t *Token) Log() {
+	fmt.Println(TOKENS[t.Type], t.Data)
+}
+
+func (t TokenType) Log() {
+	fmt.Println(TOKENS[t])
+
 }
 
 var TOKENS = []string{"DOT", "COMMA", "ASSIGN", "SEMICOLON", "COLON", "LEFT_CURLY", "RIGHT_CURLY", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACKET", "RIGHT_BRACKET", "FORWARD_SLASH", "BACKWARD_SLASH", "DOUBLE_QUOTE", "SINGLE_QUOTE", "TICK", "GREATER", "LESS", "NOT", "ADD", "SUB", "STAR", "DOLLAR", "QUESTION", "UNDER_SCORE", "NOT_EQUALS", "EQUALS", "LESS_OR_EQ", "GREATER_OR_EQ", "AND", "OR", "EXPONENT", "INC", "DEC", "ADD_ASSIGN", "SUB_ASSIGN", "MUL_ASSIGN", "DIV_ASSIGN", "EOF", "TYPE", "KEYWORD", "NUMBER", "IDENTIFIER", "NULL", "ERROR", "STRING", "START"}

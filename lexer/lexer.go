@@ -53,10 +53,7 @@ func existsInRune(s string, key rune) bool {
 }
 
 func isAlphaNumeric(r rune) bool {
-	if !(unicode.IsLetter(r) || unicode.IsDigit(r)) {
-		return false
-	}
-	return true
+	return (unicode.IsLetter(r) || unicode.IsDigit(r))
 }
 
 // Load file in
@@ -106,10 +103,15 @@ func (l *Lexer) getCurrent() string {
 
 func (l *Lexer) accept(value string) bool {
 	val := l.next()
+
 	if val >= 0 && strings.IndexRune(value, val) >= 0 {
 		return true
 	}
-	l.backUp()
+
+	// if not EOF backup to read passed token
+	if val != -1 {
+		l.backUp()
+	}
 	return false
 }
 
@@ -124,8 +126,7 @@ func (l *Lexer) Exec() []*token.Token {
 	var tokens []*token.Token
 	for {
 		l.ignore()
-		var curToken *token.Token
-		curToken = l.GetNextToken()
+		curToken := l.GetNextToken()
 		tokens = append(tokens, curToken)
 		if curToken.Type == token.EOF {
 			break
@@ -173,7 +174,7 @@ func (l *Lexer) lexSymbol() *token.Token {
 	var symbolType token.TokenType
 
 	symbol := string(l.next())
-	if symbol == "\""  {
+	if symbol == "\"" {
 		return l.lexString()
 	}
 	if symbol == "-" && unicode.IsDigit(l.peek()) {
@@ -198,9 +199,9 @@ func (l *Lexer) lexSymbol() *token.Token {
 		symbolType = token.LEFT_CURLY
 	case "}":
 		symbolType = token.RIGHT_CURLY
-	case ")":
-		symbolType = token.LEFT_PAREN
 	case "(":
+		symbolType = token.LEFT_PAREN
+	case ")":
 		symbolType = token.RIGHT_PAREN
 	case "[":
 		symbolType = token.LEFT_BRACKET
@@ -267,6 +268,7 @@ func (l *Lexer) lexNumber() *token.Token {
 	if l.accept(".") {
 		l.acceptRun(digits)
 	}
+
 	return token.CreateAndGetPointer(token.NUMBER, l.getCurrent())
 }
 
@@ -276,6 +278,7 @@ func (l *Lexer) lexString() *token.Token {
 	if !l.accept("\"") {
 		panic(errors.StringSyntaxError + l.getCurrent() + string(l.peek()))
 	}
+
 	return token.CreateAndGetPointer(token.STRING, l.getCurrent())
 
 }

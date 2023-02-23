@@ -1,6 +1,8 @@
 package parser
 
-import "github.com/csirak1528/modlang/token"
+import (
+	"github.com/csirak1528/modlang/token"
+)
 
 type Operation struct {
 	Type     token.TokenType
@@ -25,6 +27,13 @@ func CreateMathOperation(opType token.TokenType, left any, right any) *Operation
 
 func (o *Operation) setParent(p *Operation) {
 	o.Parent = p
+}
+
+func (o *Operation) LogMath() {
+	o.Type.Log()
+	for _, c := range o.Children.([]*token.Token) {
+		c[0].Log()
+	}
 }
 
 // (NUMBER || MATH) (ADD || SUB || MUL || EXP || FORWARD_SLASH) (NUMBER || MATH)

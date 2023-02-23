@@ -1,42 +1,42 @@
 package parser
 
 import (
-	"fmt"
-
 	"github.com/csirak1528/modlang/token"
 )
-
 
 type TokenStackNode struct {
 	val  *token.Token
 	next *TokenStackNode
-	len  int
 }
 type Stack struct {
-	head any
+	head *TokenStackNode
 	Size int
 }
 
-func (tsn *Stack) Push(t *token.Token) {
-	cur := TokenStackNode{val: t, next: tsn, len: tsn.len + 1}
-	tsn = &cur
+func (s *Stack) Push(t *token.Token) {
+	cur := TokenStackNode{val: t, next: s.head}
+	s.Size++
+	s.head = &cur
 }
 
-func (tsn *TokenStackNode) Pop() *token.Token {
-	out := tsn.val
-	tsn = tsn.next
-	return out
+func (s *Stack) Pop() *token.Token {
+	out := s.head
+	if out != nil {
+		s.head = out.next
+		s.Size--
+		return out.val
+	}
+	return nil
 }
 
-func (tsn *TokenStackNode) Peek() *token.Token {
-	return tsn.next.val
+func (s *Stack) Peek() *token.Token {
+	return s.head.next.val
 }
 
-func (tsn *TokenStackNode) ToArray() []*token.Token {
-	fmt.Print(tsn)
-	arr := make([]*token.Token, tsn.len)
-	for tsn.len >= 0 {
-		arr[tsn.len] = tsn.Pop()
+func (s *Stack) ToArray() []*token.Token {
+	arr := make([]*token.Token, s.Size)
+	for s.Size > 0 {
+		arr[s.Size] = s.Pop()
 	}
 	return arr
 }
