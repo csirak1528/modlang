@@ -16,11 +16,12 @@ func main() {
 	fmt.Println("\nLexing is complete\n")
 
 	mainParser := parser.Parser{Tokens: tokens, ItemStack: &parser.Stack{}}
-	stack := mainParser.ParseAll().ToArray().([]any)
-	for lineNumber, out := range stack {
-		fmt.Print(lineNumber+1,": ")
-		fmt.Println("Result: ", out.(*parser.Operation).Eval())
-	}
+	mainParser.ParseAll().Log()
+	// stack := mainParser.ParseAll().ToArray().([]any)
+	// for lineNumber, out := range stack {
+	// 	fmt.Print(lineNumber+1,": ")
+	// 	fmt.Println("Result: ", out.(*parser.Operation).Eval())
+	// }
 
 }
 

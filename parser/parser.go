@@ -62,6 +62,9 @@ func (p *Parser) ParseAll() *Stack {
 		} else if curToken.Type == token.NUMBER {
 			data := []any{curToken.Data}
 			p.ItemStack.Push(&Operation{Type: token.NUMBER, Children: data})
+		} else if curToken.Type == token.ASSIGN {
+			p.ItemStack.Push(p.parseAssign())
+
 		} else if curToken.Type == token.SEMICOLON {
 			outputStack.Push(p.ItemStack.Parse())
 		} else {
@@ -129,7 +132,7 @@ func (p *Parser) parseMath() *Operation {
 	}
 	p.ItemStack.Push(token.EOFTOKEN)
 	right := p.ItemStack.Parse()
-	return CreateMathOperation(operation.Type, left, right)
+	return CreateOperation(operation.Type, left, right)
 }
 
 func (p *Parser) parseParen() {
@@ -151,4 +154,22 @@ func (p *Parser) parseMulDiv() {
 
 func (p *Parser) parseAddSub() {
 	p.waitFor([]token.TokenType{token.EOF, token.SEMICOLON})
+}
+
+func (p *Parser) parseAssign() *Operation {
+	operation := p.getCurToken()
+	var left *Operation
+
+	iden := p.ItemStack.Pop().(*token.Token).Data
+	var typeDef string
+
+	if p.ItemStack.Cur().(*token.Token).Type == token.TYPE {
+		typeDef = p.ItemStack.Pop().(*token.Token).Data
+		left = &Operation{Type: token.TYPE, Children: []any{typeDef, iden}}
+	} else {
+		left = &Operation{Type: token.IDENTIFIER, Children: []any{iden}}
+	}
+	p.waitFor([]token.TokenType{token.SEMICOLON})
+	right := p.ItemStack.Parse()
+	return CreateOperation(operation.Type, left, right)
 }

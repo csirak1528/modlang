@@ -34,8 +34,13 @@ func (s *Stack) Pop() any {
 }
 
 func (s *Stack) Peek() any {
-	return s.head.next.val.(*token.Token)
+	return s.head.next.val
 }
+
+func (s *Stack) Cur() any {
+	return s.head.val
+}
+
 
 func (s *Stack) ToArray() any {
 	arr := make([]any, s.Size)
@@ -72,7 +77,6 @@ func (s *Stack) Log() {
 			fmt.Print(item.(*token.Token).GetLog() + " ")
 		case *Operation:
 			item.(*Operation).Log(0)
-
 		}
 	}
 	for _, item := range arr {

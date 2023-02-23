@@ -10,7 +10,6 @@ import (
 
 type Operation struct {
 	Type     token.TokenType
-	Parent   *Operation
 	Children []any
 }
 
@@ -23,15 +22,13 @@ type MathOperation struct {
 	IsOperation bool
 }
 
-func CreateMathOperation(opType token.TokenType, left any, right any) *Operation {
+func CreateOperation(opType token.TokenType, left any, right any) *Operation {
 	child := []any{left, right}
 	o := Operation{Type: opType, Children: child}
 	return &o
 }
 
-func (o *Operation) setParent(p *Operation) {
-	o.Parent = p
-}
+
 
 // (NUMBER || MATH) (ADD || SUB || MUL || EXP || FORWARD_SLASH) (NUMBER || MATH)
 
@@ -44,7 +41,7 @@ type AssignOperation struct {
 
 func (o *Operation) Log(indent int) {
 	fmt.Print("Operation: " + o.Type.GetLog() + "{")
-	for _, item := range o.Children {
+	for l, item := range o.Children {
 		switch item.(type) {
 		case *Operation:
 			fmt.Println()
@@ -53,6 +50,9 @@ func (o *Operation) Log(indent int) {
 			printIndent(indent)
 		default:
 			fmt.Print(item)
+			if l< len(o.Children)-1{
+				fmt.Print(" ")
+			}
 		}
 	}
 	fmt.Println("}")
