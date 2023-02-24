@@ -29,7 +29,7 @@ const ALPHANUMERIC = "1234567890abcdefghjiklmnopqrstuvwxyzABCDEFGHJIKLMNOPQRSTUV
 const STRINGCONTENTS = "1234567890abcdefghjiklmnopqrstuvwxyzABCDEFGHJIKLMNOPQRSTUVWXYZ.,=;:{})([]/'`!===<><=>=&&!||+-***?$_\a\b\f\n\r\t\v'\\ "
 const escapeChars = "abfnrtv'\"\\"
 
-var KEYWORDS = []string{"module", "if", "else", "for", "while", "break", "wallet", "this", "const", "import", "return", "struct", "null", "new", "from", "require"}
+var KEYWORDS = []string{"module", "if", "else", "for", "while", "break", "wallet", "this", "const", "import", "return", "struct", "null", "new", "from", "require", "fun"}
 var TYPES = []string{"uint", "address", "bool", "string", "bytes"}
 var DOUBLESYMBOLS = []string{"!", "=", "<", ">", "&", "|", "*"}
 var DOUBLESYMBOLSEND = []string{"&", "|", "*", "+", "-", "="}

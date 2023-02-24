@@ -41,7 +41,6 @@ func (s *Stack) Cur() any {
 	return s.head.val
 }
 
-
 func (s *Stack) ToArray() any {
 	arr := make([]any, s.Size)
 	for s.Size > 0 {
@@ -51,6 +50,11 @@ func (s *Stack) ToArray() any {
 }
 
 func (s *Stack) Parse() *Operation {
+	parser := s.GetParse()
+	return parser.Parse()
+}
+
+func (s *Stack) GetParse() *Parser {
 	stackItems := s.ToArray().([]any)
 	tokens := make([]*token.Token, len(stackItems))
 	opStack := &Stack{}
@@ -65,10 +69,13 @@ func (s *Stack) Parse() *Operation {
 		}
 	}
 
-	parser := Parser{Tokens: tokens, ItemStack: opStack}
-	return parser.Parse()
+	return &Parser{Tokens: tokens, ItemStack: opStack}
 }
-
+func (s *Stack) ParseAll() *Operation {
+	parser := s.GetParse()
+	stack := parser.ParseAll()
+	return &Operation{Type: token.SCOPE, Children: []any{stack}}
+}
 func (s *Stack) Log() {
 	arr := s.ToArray().([]any)
 	for _, item := range arr {
@@ -76,7 +83,7 @@ func (s *Stack) Log() {
 		case *token.Token:
 			fmt.Print(item.(*token.Token).GetLog() + " ")
 		case *Operation:
-			item.(*Operation).Log(0)
+			item.(*Operation).Log(1)
 		}
 	}
 	for _, item := range arr {

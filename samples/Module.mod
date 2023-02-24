@@ -6,7 +6,7 @@ module AaveWithdrawal {
         AToken.approve(wallet, amount)
     ])
 
-    createWithdraw(AToken token, address user, uint amount){
+    fun createWithdraw(AToken token, address user, uint amount){
         LendingPool pool = token.POOL();
         address underlyingAssetAddress = token.UNDERLYING_ASSET_ADDRESS();
 

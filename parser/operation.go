@@ -13,22 +13,11 @@ type Operation struct {
 	Children []any
 }
 
-type MathOperation struct {
-	Sign        token.TokenType
-	Left        *MathOperation
-	Right       *MathOperation
-	Token       *token.Token
-	Operation   *Operation
-	IsOperation bool
-}
-
 func CreateOperation(opType token.TokenType, left any, right any) *Operation {
 	child := []any{left, right}
 	o := Operation{Type: opType, Children: child}
 	return &o
 }
-
-
 
 // (NUMBER || MATH) (ADD || SUB || MUL || EXP || FORWARD_SLASH) (NUMBER || MATH)
 
@@ -48,9 +37,15 @@ func (o *Operation) Log(indent int) {
 			printIndent(indent + 1)
 			item.(*Operation).Log(indent + 1)
 			printIndent(indent)
+		case *Stack:
+			fmt.Print("STACK")
+			fmt.Println()
+			printIndent(indent + 1)
+			item.(*Stack).Log()
+			printIndent(indent)
 		default:
 			fmt.Print(item)
-			if l< len(o.Children)-1{
+			if l < len(o.Children)-1 {
 				fmt.Print(" ")
 			}
 		}

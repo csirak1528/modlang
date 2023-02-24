@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	lex "github.com/csirak1528/modlang/lexer"
@@ -12,14 +11,14 @@ func main() {
 
 	lexer := loadFile()
 	tokens := lexer.Exec()
-
-	fmt.Println("\nLexing is complete\n")
+	// fmt.Println(token.LogTokens(tokens))
 
 	mainParser := parser.Parser{Tokens: tokens, ItemStack: &parser.Stack{}}
 	mainParser.ParseAll().Log()
+
 	// stack := mainParser.ParseAll().ToArray().([]any)
 	// for lineNumber, out := range stack {
-	// 	fmt.Print(lineNumber+1,": ")
+	// 	fmt.Print(lineNumber+1, ": ")
 	// 	fmt.Println("Result: ", out.(*parser.Operation).Eval())
 	// }
 

@@ -23,41 +23,36 @@ const (
 	GREATER                         // >
 	LESS                            // <
 	NOT                             // !
-
-	// MATH
-	ADD           // +
-	SUB           // -
-	STAR          // *
-	FORWARD_SLASH // /
-
-	DOLLAR        // $
-	QUESTION      // ?
-	UNDER_SCORE   // _
-	NOT_EQUALS    // !=
-	EQUALS        // ==
-	LESS_OR_EQ    // <=
-	GREATER_OR_EQ // >=
-	AND           // &&
-	OR            // ||
-	EXPONENT      // **
-	INC           // ++
-	DEC           // --
-	ADD_ASSIGN    // +=
-	SUB_ASSIGN    // -=
-	MUL_ASSIGN    // *=
-	DIV_ASSIGN    // /=
-
-	// SPECIAL TOKEN TYPES
-
-	EOF        // end of file
-	TYPE       // variable type
-	KEYWORD    // keywords like var, module, if
-	NUMBER     // number
-	IDENTIFIER // identifier
-	NULL       // null
-	ERROR      // error
-	STRING     // string
-	START
+	ADD                             // +
+	SUB                             // -
+	STAR                            // *
+	FORWARD_SLASH                   // /
+	DOLLAR                          // $
+	QUESTION                        // ?
+	UNDER_SCORE                     // _
+	NOT_EQUALS                      // !=
+	EQUALS                          // ==
+	LESS_OR_EQ                      // <=
+	GREATER_OR_EQ                   // >=
+	AND                             // &&
+	OR                              // ||
+	EXPONENT                        // **
+	INC                             // ++
+	DEC                             // --
+	ADD_ASSIGN                      // +=
+	SUB_ASSIGN                      // -=
+	MUL_ASSIGN                      // *=
+	DIV_ASSIGN                      // /=
+	EOF                             // end of file  // SPECIAL TOKEN TYPES
+	TYPE                            // variable type
+	KEYWORD                         // keywords like var, module, if
+	NUMBER                          // number
+	IDENTIFIER                      // identifier
+	NULL                            // null
+	ERROR                           // error
+	STRING                          // string
+	FUN                             // function declarations
+	SCOPE                           // curly scope
 )
 
 type Token struct {
@@ -132,7 +127,9 @@ var TOKENS = []string{
 	"NULL",
 	"ERROR",
 	"STRING",
-	"START"}
+	"FUN",
+	"SCOPE",
+}
 
 var MATH = []TokenType{ADD, SUB, STAR, FORWARD_SLASH, EXPONENT}
 
