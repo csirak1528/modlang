@@ -145,7 +145,11 @@ func (t TokenType) ExistsIn(list []TokenType) bool {
 func LogTokens(tkns []*Token) string {
 	out := tkns[0].GetLog()
 	for _, t := range tkns[1:] {
-		out += ", " + t.GetLog()
+		if t != nil {
+			out += ", " + t.GetLog()
+		}else{
+			out += ", nil"
+		}
 	}
 	return out
 }

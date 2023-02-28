@@ -67,7 +67,6 @@ func (p *Parser) ParseAll() *Stack {
 			p.ItemStack.Push(&Operation{Type: token.NUMBER, Children: data})
 		} else if curToken.Type == token.ASSIGN {
 			p.ItemStack.Push(p.parseAssign())
-
 		} else if curToken.Type == token.SEMICOLON {
 			outputStack.Push(p.ItemStack.Parse())
 		} else {
@@ -97,10 +96,10 @@ func (p *Parser) Parse() *Operation {
 		} else if curToken.Type == token.NUMBER {
 			data := []any{curToken.Data}
 			p.ItemStack.Push(&Operation{Type: token.NUMBER, Children: data})
+		} else if curToken.Type == token.ASSIGN {
+			p.ItemStack.Push(p.parseAssign())
 		} else if curToken.Type == token.SEMICOLON {
-			p.ItemStack.Log()
 			p.ItemStack.Push(p.ItemStack.Parse())
-			p.next()
 		} else {
 			p.ItemStack.Push(curToken)
 		}
@@ -109,7 +108,6 @@ func (p *Parser) Parse() *Operation {
 		}
 		p.next()
 	}
-
 	out := p.ItemStack.Pop()
 	return out.(*Operation)
 }
@@ -138,15 +136,14 @@ func (p *Parser) parseMath() *Operation {
 	}
 	p.ItemStack.Push(token.EOFTOKEN)
 	right := p.ItemStack.Parse()
-	return CreateOperation(operation.Type, left, right)
+	children := []any{left, right}
+	return CreateOperation(operation.Type, children)
 }
 
 func (p *Parser) parseScope() {
 	curStack := &Stack{}
 	p.waitForWithStack([]token.TokenType{token.RIGHT_CURLY}, curStack)
-	curStack.Push(token.EOFTOKEN)	
-	curStack.Log()
-	out := curStack.Parse()
+	out := curStack.ParseAll()
 	p.ItemStack.Push(out)
 }
 
@@ -186,5 +183,6 @@ func (p *Parser) parseAssign() *Operation {
 	}
 	p.waitFor([]token.TokenType{token.SEMICOLON})
 	right := p.ItemStack.Parse()
-	return CreateOperation(operation.Type, left, right)
+	children := []any{left, right}
+	return CreateOperation(operation.Type, children)
 }

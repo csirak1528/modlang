@@ -76,14 +76,14 @@ func (s *Stack) ParseAll() *Operation {
 	stack := parser.ParseAll()
 	return &Operation{Type: token.SCOPE, Children: []any{stack}}
 }
-func (s *Stack) Log() {
+func (s *Stack) Log(ident int) {
 	arr := s.ToArray().([]any)
 	for _, item := range arr {
 		switch item.(type) {
 		case *token.Token:
 			fmt.Print(item.(*token.Token).GetLog() + " ")
 		case *Operation:
-			item.(*Operation).Log(1)
+			item.(*Operation).Log(ident)
 		}
 	}
 	for _, item := range arr {

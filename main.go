@@ -14,7 +14,7 @@ func main() {
 	// fmt.Println(token.LogTokens(tokens))
 
 	mainParser := parser.Parser{Tokens: tokens, ItemStack: &parser.Stack{}}
-	mainParser.ParseAll().Log()
+	mainParser.ParseAll().Log(0)
 
 	// stack := mainParser.ParseAll().ToArray().([]any)
 	// for lineNumber, out := range stack {

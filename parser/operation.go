@@ -13,9 +13,8 @@ type Operation struct {
 	Children []any
 }
 
-func CreateOperation(opType token.TokenType, left any, right any) *Operation {
-	child := []any{left, right}
-	o := Operation{Type: opType, Children: child}
+func CreateOperation(opType token.TokenType, children []any) *Operation {
+	o := Operation{Type: opType, Children: children}
 	return &o
 }
 
@@ -38,10 +37,9 @@ func (o *Operation) Log(indent int) {
 			item.(*Operation).Log(indent + 1)
 			printIndent(indent)
 		case *Stack:
-			fmt.Print("STACK")
 			fmt.Println()
 			printIndent(indent + 1)
-			item.(*Stack).Log()
+			item.(*Stack).Log(indent + 1)
 			printIndent(indent)
 		default:
 			fmt.Print(item)
