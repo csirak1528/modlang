@@ -46,6 +46,7 @@ func (o *Operation) Log(indent int) {
 			if l < len(o.Children)-1 {
 				fmt.Print(" ")
 			}
+
 		}
 	}
 	fmt.Println("}")

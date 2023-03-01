@@ -78,19 +78,18 @@ func (s *Stack) ParseAll() *Operation {
 }
 func (s *Stack) Log(indent int) {
 	arr := s.ToArray().([]any)
-	for _, item := range arr {
+	for i, item := range arr {
 		switch item.(type) {
 		case *token.Token:
-			printIndent(indent-1)
 			fmt.Print(item.(*token.Token).GetLog() + " ")
 		case *Operation:
-			printIndent(indent-1)
+			if item.(*Operation).Type == token.SCOPE && i != 0 {
+				printIndent(indent)
+			}
 			item.(*Operation).Log(indent)
-			printIndent(indent)
 		}
 	}
 	for _, item := range arr {
 		s.Push(item)
 	}
-	fmt.Println()
 }

@@ -4,6 +4,10 @@ import (
 	"github.com/csirak1528/modlang/token"
 )
 
+var CURLY_SCOPE_TYPE = []token.TokenType{token.LEFT_CURLY, token.RIGHT_CURLY}
+var PAREN_SCOPE_TYPE = []token.TokenType{token.LEFT_PAREN, token.RIGHT_PAREN}
+var BRACKET_SCOPE_TYPE = []token.TokenType{token.LEFT_BRACKET, token.RIGHT_BRACKET}
+
 type Parser struct {
 	Tokens    []*token.Token
 	curToken  int
@@ -37,6 +41,25 @@ func (p *Parser) waitFor(t []token.TokenType) {
 
 func (p *Parser) waitForWithStack(t []token.TokenType, s *Stack) {
 	for !p.next().Type.ExistsIn(t) {
+		s.Push(p.getCurToken())
+	}
+	p.back()
+}
+
+func (p *Parser) waitForWithStackScoped(t []token.TokenType, s *Stack, scopeType []token.TokenType) {
+	scopeDepth := 0
+	for {
+		cur := p.next()
+		if cur.Type.ExistsIn(t) && !(cur.Type == scopeType[1] && scopeDepth > 0) {
+			break
+		}
+
+		if cur.Type == scopeType[0] {
+			scopeDepth++
+		}
+		if cur.Type == scopeType[1] {
+			scopeDepth--
+		}
 		s.Push(p.getCurToken())
 	}
 	p.back()
@@ -142,7 +165,7 @@ func (p *Parser) parseMath() *Operation {
 
 func (p *Parser) parseScope() {
 	curStack := &Stack{}
-	p.waitForWithStack([]token.TokenType{token.RIGHT_CURLY}, curStack)
+	p.waitForWithStackScoped([]token.TokenType{token.RIGHT_CURLY}, curStack, CURLY_SCOPE_TYPE)
 	out := curStack.ParseAll()
 	p.ItemStack.Push(out)
 }
