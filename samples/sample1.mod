@@ -1,11 +1,3 @@
-{
-    {
-        uint sd = 234;      
-    }
-    {
-        uint sd = 234;      
-    }
-    {
-        uint sd = 234;      
-    }
+(sd == true) {
+    uint k = 2;
 }

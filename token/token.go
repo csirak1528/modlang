@@ -43,16 +43,20 @@ const (
 	SUB_ASSIGN                      // -=
 	MUL_ASSIGN                      // *=
 	DIV_ASSIGN                      // /=
-	EOF                             // end of file  // SPECIAL TOKEN TYPES
-	TYPE                            // variable type
-	KEYWORD                         // keywords like var, module, if
-	NUMBER                          // number
-	IDENTIFIER                      // identifier
-	NULL                            // null
-	ERROR                           // error
-	STRING                          // string
-	FUN                             // function declarations
-	SCOPE                           // curly scope
+	EOF                             // end of file
+
+	// OPERATION / SPECIAL TYPES
+	TYPE            // variable type
+	KEYWORD         // keywords like var, module, if
+	NUMBER          // number
+	IDENTIFIER      // identifier
+	NULL            // null
+	ERROR           // error
+	STRING          // string
+	FUN             // function declarations
+	SCOPE           // curly scope
+	WRAPPED_CONTENT // paren scope
+	COMP            // bool comparison
 )
 
 type Token struct {
@@ -129,9 +133,12 @@ var TOKENS = []string{
 	"STRING",
 	"FUN",
 	"SCOPE",
+	"WRAPPED_CONTENT",
+	"COMP",
 }
 
 var MATH = []TokenType{ADD, SUB, STAR, FORWARD_SLASH, EXPONENT}
+var COMPARISON = []TokenType{GREATER, LESS, NOT, NOT_EQUALS, EQUALS, LESS_OR_EQ, GREATER_OR_EQ, AND, OR}
 
 func (t TokenType) ExistsIn(list []TokenType) bool {
 	for _, l := range list {
@@ -147,7 +154,7 @@ func LogTokens(tkns []*Token) string {
 	for _, t := range tkns[1:] {
 		if t != nil {
 			out += ", " + t.GetLog()
-		}else{
+		} else {
 			out += ", nil"
 		}
 	}

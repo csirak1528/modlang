@@ -14,6 +14,10 @@ type Parser struct {
 	ItemStack *Stack
 }
 
+func (p *Parser) isDone() bool {
+	return p.curToken >= len(p.Tokens)-1
+}
+
 func (p *Parser) next() *token.Token {
 	p.curToken += 1
 	return p.getCurToken()
@@ -35,6 +39,10 @@ func (p *Parser) peek() *token.Token {
 func (p *Parser) waitFor(t []token.TokenType) {
 	for !p.next().Type.ExistsIn(t) {
 		p.ItemStack.Push(p.getCurToken())
+		if p.isDone() {
+			return
+		}
+
 	}
 	p.back()
 }
@@ -42,6 +50,9 @@ func (p *Parser) waitFor(t []token.TokenType) {
 func (p *Parser) waitForWithStack(t []token.TokenType, s *Stack) {
 	for !p.next().Type.ExistsIn(t) {
 		s.Push(p.getCurToken())
+		if p.isDone() {
+			return
+		}
 	}
 	p.back()
 }
@@ -61,6 +72,9 @@ func (p *Parser) waitForWithStackScoped(t []token.TokenType, s *Stack, scopeType
 			scopeDepth--
 		}
 		s.Push(p.getCurToken())
+		if p.isDone() {
+			return
+		}
 	}
 	p.back()
 }
@@ -68,6 +82,9 @@ func (p *Parser) waitForWithStackScoped(t []token.TokenType, s *Stack, scopeType
 func (p *Parser) waitForNot(t []token.TokenType) {
 	for p.next().Type.ExistsIn(t) {
 		p.ItemStack.Push(p.getCurToken())
+		if p.isDone() {
+			return
+		}
 	}
 	p.back()
 }
@@ -80,14 +97,22 @@ func (p *Parser) ParseAll() *Stack {
 		}
 		if curToken.Type.ExistsIn(token.MATH) {
 			p.ItemStack.Push(p.parseMath())
+		} else if curToken.Type.ExistsIn(token.COMPARISON) {
+			p.ItemStack.Push(p.parseComparision())
 		} else if curToken.Type == token.LEFT_PAREN {
 			p.parseParen()
+			outputStack.Push(p.ItemStack.Pop())
 		} else if curToken.Type == token.LEFT_CURLY {
 			p.parseScope()
 			outputStack.Push(p.ItemStack.Pop())
 		} else if curToken.Type == token.NUMBER {
 			data := []any{curToken.Data}
 			p.ItemStack.Push(&Operation{Type: token.NUMBER, Children: data})
+		} else if curToken.Type == token.KEYWORD {
+			p.ItemStack.Push(p.parseKeyword())
+		} else if curToken.Type == token.IDENTIFIER {
+			data := []any{curToken.Data}
+			p.ItemStack.Push(&Operation{Type: token.IDENTIFIER, Children: data})
 		} else if curToken.Type == token.ASSIGN {
 			p.ItemStack.Push(p.parseAssign())
 		} else if curToken.Type == token.SEMICOLON {
@@ -101,6 +126,9 @@ func (p *Parser) ParseAll() *Stack {
 		p.next()
 	}
 
+	for p.ItemStack.Size > 0 {
+		outputStack.Push(p.ItemStack.Pop())
+	}
 	return outputStack
 }
 
@@ -112,6 +140,8 @@ func (p *Parser) Parse() *Operation {
 		}
 		if curToken.Type.ExistsIn(token.MATH) {
 			p.ItemStack.Push(p.parseMath())
+		} else if curToken.Type.ExistsIn(token.COMPARISON) {
+			p.ItemStack.Push(p.parseComparision())
 		} else if curToken.Type == token.LEFT_PAREN {
 			p.parseParen()
 		} else if curToken.Type == token.LEFT_CURLY {
@@ -119,6 +149,11 @@ func (p *Parser) Parse() *Operation {
 		} else if curToken.Type == token.NUMBER {
 			data := []any{curToken.Data}
 			p.ItemStack.Push(&Operation{Type: token.NUMBER, Children: data})
+		} else if curToken.Type == token.KEYWORD {
+			p.ItemStack.Push(p.parseKeyword())
+		} else if curToken.Type == token.IDENTIFIER {
+			data := []any{curToken.Data}
+			p.ItemStack.Push(&Operation{Type: token.IDENTIFIER, Children: data})
 		} else if curToken.Type == token.ASSIGN {
 			p.ItemStack.Push(p.parseAssign())
 		} else if curToken.Type == token.SEMICOLON {
@@ -131,6 +166,7 @@ func (p *Parser) Parse() *Operation {
 		}
 		p.next()
 	}
+
 	out := p.ItemStack.Pop()
 	return out.(*Operation)
 }
@@ -172,6 +208,15 @@ func (p *Parser) parseScope() {
 
 func (p *Parser) parseParen() {
 	curStack := &Stack{}
+	p.waitForWithStackScoped([]token.TokenType{token.RIGHT_PAREN}, curStack, PAREN_SCOPE_TYPE)
+	p.next()
+	out := curStack.ParseAll()
+	out.Type = token.WRAPPED_CONTENT
+	p.ItemStack.Push(out)
+}
+
+func (p *Parser) parseWrappedMath() {
+	curStack := &Stack{}
 	p.waitForWithStack([]token.TokenType{token.RIGHT_PAREN}, curStack)
 	curStack.Push(token.EOFTOKEN)
 	p.ItemStack.Push(curStack.Parse())
@@ -208,4 +253,22 @@ func (p *Parser) parseAssign() *Operation {
 	right := p.ItemStack.Parse()
 	children := []any{left, right}
 	return CreateOperation(operation.Type, children)
+}
+
+func (p *Parser) parseComparision() *Operation {
+	left := p.ItemStack.Parse()
+	p.waitFor([]token.TokenType{token.SEMICOLON, token.RIGHT_PAREN})
+	right := p.ItemStack.Parse()
+	children := []any{left, right}
+	return CreateOperation(token.COMP, children)
+}
+
+func (p *Parser) parseKeyword() *Operation {
+	switch p.getCurToken().Data {
+	case "true":
+		return CreateOperation(token.COMP, []any{true})
+	case "false":
+		return CreateOperation(token.COMP, []any{false})
+	}
+	panic("Data is not keyword")
 }
