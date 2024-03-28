@@ -1,6 +1,6 @@
 # **ModLang**
 
-*Authors: [Caleb Sirak](https://github.com/csirak1528), [William Starr](https://github.com/williamstarkro)*
+*Authors: [Caleb Sirak](https://github.com/csirak1528)
 
 A cross compiled language for building modules in the Fun ecosystem
 
